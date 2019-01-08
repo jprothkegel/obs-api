@@ -17,7 +17,7 @@ exports.obs_connect = (req, res, next) => {
 }
 
 exports.obs_start_streaming = (req, res, next) => {
-    obs.send('StartStreaming')
+    obs.send('StartStreaming',{'stream.settings.key': 'test2'})
     .then(()=>{
         return res.status(200).json({
             message: 'Streaming started correctly'
