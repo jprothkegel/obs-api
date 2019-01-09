@@ -63,3 +63,22 @@ exports.get_streamkey = (req, res, next) => {
         })
     })
 }
+
+exports.get_all_streamkeys = (req, res, next) => {
+    StreamKey.find()
+    .select('userId key')
+    .exec()
+    .then(streamKey => {
+        res.status(200).json({
+            key: streamKey
+        })
+    })
+    .catch(err => {
+        console.log(err);
+        res.status(500).json({
+            error:err
+        })
+    })
+}
+
+

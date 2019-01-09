@@ -1,4 +1,6 @@
 const OBSWebSocket = require('obs-websocket-js');
+const User = require ('../models/user');
+const StreamKey = require('../models/streamKey');
 const obs = new OBSWebSocket();
 
 exports.obs_connect = (req, res, next) => {
@@ -17,19 +19,45 @@ exports.obs_connect = (req, res, next) => {
 }
 
 exports.obs_start_streaming = (req, res, next) => {
-    obs.send('StartStreaming',{'stream.settings.key': 'test2'})
-    .then(()=>{
-        return res.status(200).json({
-            message: 'Streaming started correctly'
-        })
+    StreamKey.find({userId: req.body.userId})
+    .select('key')
+    .exec()
+    .then(streamKey => {
+        if(streamKey.length > 1){
+            return res.status(409).json({
+                message: "User can't have more than one Stream Key"
+            })
+        } else {
+            console.log(streamKey[0].key)
+            obs.send('StartStreaming',{
+                'stream': {
+                    'settings':{
+                        'key': streamKey[0].key
+                    }
+                }
+            })
+            .then(()=>{
+                return res.status(200).json({
+                    message: 'Streaming started correctly'
+                })
+            })
+            .catch(err=>{
+                console.log(err)
+                return res.status(500).json({
+                    error: err,
+                    message: 'Not connected to Socket'
+                })
+            })
+        }
+        
     })
-    .catch(err=>{
-        console.log(err)
+    .catch(err => {
         return res.status(500).json({
-            error: err,
-            message: 'No está conectado'
+            message: 'The user has no Stream Key',
+            error: err
         })
     })
+    
 }
 
 exports.obs_stop_streaming = (req, res, next) => {
