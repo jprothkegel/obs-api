@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const obsRoutes = require('./api/routes/obs');
 const streamKeyRoutes = require('./api/routes/streamKey');
 const userRoutes = require('./api/routes/user');
+const metadataRoutes = require('./api/routes/metadata');
 
 mongoose.connect('mongodb://vugs:Lacatolica10@ds151864.mlab.com:51864/obs-api',{useNewUrlParser:true});
 mongoose.Promise = global.Promise;
@@ -26,5 +27,6 @@ app.use((req,res,next)=>{
 app.use('/obs', obsRoutes)
 app.use('/streamKey', streamKeyRoutes)
 app.use('/user', userRoutes);
+app.use('/metadata', metadataRoutes)
 
 module.exports = app;

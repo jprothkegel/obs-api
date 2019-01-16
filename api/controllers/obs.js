@@ -6,9 +6,9 @@ const obs = new OBSWebSocket();
 exports.obs_connect = (req, res, next) => {
     obs.connect({address: 'localhost:4444'})
     .then(()=>{
-        console.log('Connection completed')
         return res.status(200).json({
-            message: 'All was good'
+            message: 'Conexión exitosa',
+            estado: 'Conectado'
         })
     }).catch(err=>{
         console.log(err)
@@ -168,6 +168,21 @@ exports.obs_get_streaming_status = (req, res, next) => {
         console.log(status)
         return res.status(200).json({
             message: status.status
+        })
+    })
+}
+
+exports.obs_get_version = (req, res, next) => {
+    obs.send('GetVersion')
+    .then(status => {
+        return res.status(200).json({
+            message: status
+        })
+    })
+    .catch(err => {
+        return res.status(500).json({
+            message: err,
+            estado: 'No conectado'
         })
     })
 }

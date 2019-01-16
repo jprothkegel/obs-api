@@ -9,7 +9,7 @@ exports.streamKey_generate = (req, res, next) => {
     .then(streamKey =>{
         if(streamKey.length >= 1){
             return res.status(409).json({
-                message: "The user has already a Stream Key"
+                message: "El usuario ya posee un Stream Key"
             })
         } else {
             User.findById(req.body.userId)
@@ -38,7 +38,11 @@ exports.streamKey_generate = (req, res, next) => {
             })
         }
     })
-    .catch();   
+    .catch(err => {
+        res.status(404).json({
+            message: 'User not found'
+        })
+    });   
 }
 
 exports.get_streamkey = (req, res, next) => {
