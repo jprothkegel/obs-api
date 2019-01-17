@@ -113,7 +113,11 @@ exports.obs_stop_recording = (req, res, next) => {
 
 exports.obs_start_streaming_recording = (req, res, next) => {
     obs.send('StartStreaming', {
-        'stream.settings.key': req.body.streamKey
+        'stream': {
+            'settings':{
+                'key': streamKey[0].key
+            }
+        }
     })
     .then(()=>{
         obs.send('StartRecording')
