@@ -28,7 +28,8 @@ exports.streamKey_generate = (req, res, next) => {
                 return streamKey.save();
             }).then(result => {
                 res.status(201).json({
-                    message: 'StreamKey stored'
+                    message: 'StreamKey stored',
+                    result: result
                 })
             }).catch(err => {
                 res.status(500).json({
@@ -52,7 +53,8 @@ exports.get_streamkey = (req, res, next) => {
     .then(streamKey => {
         if(streamKey){
             res.status(200).json({
-                key: streamKey[0].key
+                key: streamKey[0].key,
+                id:streamKey[0].id
             })
         } else {
             res.status(404).json({

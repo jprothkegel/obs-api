@@ -3,7 +3,7 @@ const Video = require('../models/video')
 const mongoose = require('mongoose')
 
 exports.video_create = (req, res, next) => {
-    Video.find({streamKeyId: req.body.streamKeyId})
+    Video.find({streamKeyId: req.body.video.streamKeyData})
     .exec()
     .then(video => {
         if(video.length >= 1){
@@ -11,7 +11,7 @@ exports.video_create = (req, res, next) => {
                 message: "Esta Stream Key ya está siendo usada"
             })
         } else {
-            StreamKey.findById(req.body.streamKeyId)
+            StreamKey.findById(req.body.video.streamKeyData)
             .then(streamKey => {
                 if(!streamKey){
                     return res.status(404).json({
@@ -34,8 +34,8 @@ exports.video_create = (req, res, next) => {
                 const video = new Video({
                     _id: mongoose.Types.ObjectId(),
                     userId: streamKey.userId,
-                    streamKeyId: req.body.streamKeyId,
-                    title: req.body.title,
+                    streamKeyId: req.body.video.streamKeyData,
+                    title: req.body.video.title,
                     date: today
                 })
                 return video.save();
@@ -64,7 +64,6 @@ exports.video_get_all = (req, res, next) => {
     .select('streamKeyId _id title date')
     .exec()
     .then(video => {
-        console.log(video)
         res.status(200).json({
             videos: video
         })
@@ -84,7 +83,6 @@ exports.video_get = (req, res, next) => {
         StreamKey.findById(video.streamKeyId)
         .select('key')
         .then(result => {
-            console.log(result)
             res.status(200).json({
                 streamKey: result
             })
@@ -97,6 +95,21 @@ exports.video_get = (req, res, next) => {
         res.status(500).json({
             message: "Algo ha ido mal!",
             error:err
+        })
+    })
+}
+
+exports.video_delete = (req, res , next) => {
+    Video.remove({streamKeyId: req.body.streamKeyId})
+    .exec()
+    .then(video => {
+        res.status(200).json({
+            message: 'Video deleted'
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error: err
         })
     })
 }

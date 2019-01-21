@@ -28,7 +28,6 @@ exports.obs_start_streaming = (req, res, next) => {
                 message: "User can't have more than one Stream Key"
             })
         } else {
-            console.log(streamKey[0].key)
             obs.send('StartStreaming',{
                 'stream': {
                     'settings':{
@@ -63,7 +62,6 @@ exports.obs_start_streaming = (req, res, next) => {
 exports.obs_stop_streaming = (req, res, next) => {
     obs.send('StopStreaming')
     .then(()=>{
-        console.log('Streaming stopped correctly');
         return res.status(200).json({
             message: 'Streaming stopped correctly'
         })
@@ -80,7 +78,6 @@ exports.obs_stop_streaming = (req, res, next) => {
 exports.obs_start_recording = (req, res, next) => {
     obs.send('StartRecording')
     .then(() => {
-        console.log('Recording started correctly');
         return res.status(200).json({
             message: 'Recording started correctly'
         })
@@ -97,7 +94,6 @@ exports.obs_start_recording = (req, res, next) => {
 exports.obs_stop_recording = (req, res, next) => {
     obs.send('StopRecording')
     .then(()=>{
-        console.log('Recording stopped correctly');
         return res.status(200).json({
             message: 'Recording stopped correctly'
         })
@@ -112,35 +108,53 @@ exports.obs_stop_recording = (req, res, next) => {
 }
 
 exports.obs_start_streaming_recording = (req, res, next) => {
-    obs.send('StartStreaming', {
-        'stream': {
-            'settings':{
-                'key': streamKey[0].key
-            }
+    StreamKey.find({userId: req.body.userId})
+    .select('key')
+    .exec()
+    .then(streamKey => {
+        if(streamKey.length > 1){
+            return res.status(409).json({
+                message: "User can't have more the one Stream Key"
+            })
+        } else {
+            obs.send('StartStreaming', {
+                'stream': {
+                    'settings':{
+                        'key': streamKey[0].key
+                    }
+                }
+            })
+            .then(()=>{
+                obs.send('StartRecording')
+                .then(()=>{
+                    return res.status(200).json({
+                        message: 'Streaming and Recording started correctly'
+                    })
+                })
+                .catch(err => {
+                    console.log(err);
+                    return res.status(500).json({
+                        error: err,
+                        message: 'No está conectado'
+                    })
+                })
+            })
+            .catch(err => {
+                console.log(err);
+                return res.status(500).json({
+                    error: err,
+                    message: 'No está conectado'
+                })
+            })
         }
     })
-    .then(()=>{
-        obs.send('StartRecording')
-        .then(()=>{
-            return res.status(200).json({
-                message: 'Streaming and Recording started correctly'
-            })
-        })
-        .catch(err => {
-            console.log(err);
-            return res.status(500).json({
-                error: err,
-                message: 'No está conectado'
-            })
-        })
-    })
     .catch(err => {
-        console.log(err);
         return res.status(500).json({
-            error: err,
-            message: 'No está conectado'
+            message: 'The user has no stream Key',
+            error: err
         })
     })
+    
 }
 
 exports.obs_stop_streaming_recording = (req, res, next) => {
@@ -169,7 +183,6 @@ exports.obs_stop_streaming_recording = (req, res, next) => {
 exports.obs_get_streaming_status = (req, res, next) => {
     obs.send('GetStreamingStatus')
     .then(status=>{
-        console.log(status)
         return res.status(200).json({
             message: status.status
         })
