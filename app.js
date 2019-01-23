@@ -8,6 +8,7 @@ const streamKeyRoutes = require('./api/routes/streamKey');
 const userRoutes = require('./api/routes/user');
 const metadataRoutes = require('./api/routes/metadata');
 const videoRoutes = require('./api/routes/video');
+const eventRoutes = require('./api/routes/event');
 
 mongoose.connect('mongodb://vugs:Lacatolica10@ds151864.mlab.com:51864/obs-api',{useNewUrlParser:true});
 mongoose.Promise = global.Promise;
@@ -30,5 +31,6 @@ app.use('/streamKey', streamKeyRoutes)
 app.use('/user', userRoutes);
 app.use('/metadata', metadataRoutes)
 app.use('/video', videoRoutes)
+app.use('/event', eventRoutes)
 
 module.exports = app;
