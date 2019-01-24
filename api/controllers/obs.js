@@ -3,6 +3,11 @@ const User = require ('../models/user');
 const StreamKey = require('../models/streamKey');
 const obs = new OBSWebSocket();
 
+exports.get_status = (req, res, next) => {
+    res.status(200).json({
+        message: 'Disponible'
+    })
+}
 exports.obs_connect = (req, res, next) => {
     obs.connect({address: 'localhost:4444'})
     .then(()=>{

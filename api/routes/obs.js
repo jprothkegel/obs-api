@@ -13,4 +13,5 @@ router.post('/startStreamRecording', checkAuth, ObsController.obs_start_streamin
 router.post('/stopStreamRecording', checkAuth, ObsController.obs_stop_streaming_recording);
 router.get('/getStreamStatus', checkAuth, ObsController.obs_get_streaming_status);
 router.get('/getVersion', ObsController.obs_get_version);
+router.get('/status', checkAuth, ObsController.get_status);
 module.exports = router;
