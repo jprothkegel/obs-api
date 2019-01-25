@@ -3,7 +3,7 @@ const Video = require('../models/video')
 const mongoose = require('mongoose')
 
 exports.video_create = (req, res, next) => {
-    Video.find({streamKeyId: req.body.video.streamKeyData})
+    Video.find({streamKeyId: req.body.streamKeyData})
     .exec()
     .then(video => {
         if(video.length >= 1){
@@ -11,7 +11,7 @@ exports.video_create = (req, res, next) => {
                 message: "Esta Stream Key ya está siendo usada"
             })
         } else {
-            StreamKey.findById(req.body.video.streamKeyData)
+            StreamKey.findById(req.body.streamKeyData)
             .then(streamKey => {
                 if(!streamKey){
                     return res.status(404).json({
@@ -23,20 +23,43 @@ exports.video_create = (req, res, next) => {
                 let dd = today.getDate()
                 let mm = today.getMonth() +1
                 let yyyy = today.getFullYear()
+                let hours = today.getHours()
+                let minutes = today.getMinutes()
+                let seconds = today.getSeconds()
                 if(dd<10){
                     dd = '0'+dd;
                 }
                 if(mm<10){
                     mm = '0'+mm
                 }
-                today = mm+'/'+dd+'/'+yyyy
+                if(hours<10){
+                    hours = '0'+hours
+                }
+                if(minutes<10){
+                    minutes = '0'+minutes
+                }
+                if(seconds<10){
+                    seconds = '0'+seconds
+                }
+                today = yyyy+'-'+mm+'-'+dd+' '+hours+'-'+minutes+'-'+seconds
 
                 const video = new Video({
                     _id: mongoose.Types.ObjectId(),
                     userId: streamKey.userId,
-                    streamKeyId: req.body.video.streamKeyData,
-                    title: req.body.video.title,
-                    date: today
+                    streamKeyId: req.body.streamKeyData,
+                    metadata: {
+                        title: req.body.metadata.title,
+                        description: req.body.metadata.description,
+                        subject: req.body.metadata.subject,
+                        language: req.body.metadata.language,
+                        rights: req.body.metadata.rights,
+                        license: req.body.metadata.license,
+                        seriesid: req.body.metadata.seriesid,
+                        presenter: req.body.metadata.presenter,
+                        contributor: req.body.metadata.contributor
+                    },
+                    date: today,
+                    status: 'Active'
                 })
                 return video.save();
             }).then(result => {
@@ -60,8 +83,8 @@ exports.video_create = (req, res, next) => {
 }
 
 exports.video_get_all = (req, res, next) => {
-    Video.find()
-    .select('streamKeyId _id title date')
+    Video.find({status:'Active'})
+    .select('streamKeyId _id metadata.title date')
     .exec()
     .then(video => {
         res.status(200).json({
@@ -110,6 +133,21 @@ exports.video_delete = (req, res , next) => {
     .catch(err => {
         res.status(500).json({
             error: err
+        })
+    })
+}
+
+exports.video_change_status = (req, res, next) => {
+    Video.update({streamKeyId:req.body.id},{status:'Inactive'})
+    .exec()
+    .then(resp => {
+        res.status(200).json({
+            message: 'Estado vídeo actualizado'
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error:err
         })
     })
 }
