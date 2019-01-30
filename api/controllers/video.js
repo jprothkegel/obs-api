@@ -59,7 +59,7 @@ exports.video_create = (req, res, next) => {
                         contributor: req.body.metadata.contributor
                     },
                     date: today,
-                    status: 'Active'
+                    status: req.body.status
                 })
                 return video.save();
             }).then(result => {
