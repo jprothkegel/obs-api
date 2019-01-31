@@ -7,5 +7,6 @@ const eventController = require('../controllers/event')
 router.post('/create', checkAuth, eventController.event_create)
 router.post('/', checkAuth, eventController.event_get_all_user)
 router.post('/delete', checkAuth, eventController.event_delete)
+router.post('/location', eventController.event_get_all_location)
 
 module.exports = router

@@ -18,7 +18,8 @@ exports.event_create = (req, res, next) => {
             presenter: req.body.metadata.presenter,
             contributor: req.body.metadata.contributor
         },
-        streamType: req.body.streamType
+        streamType: req.body.streamType,
+        location: req.body.location
     })
     event.save(function (err){
         if(err) return err
@@ -56,6 +57,23 @@ exports.event_delete = (req, res, next) => {
     })
     .catch(err => {
         res.status(500).json({
+            error: err
+        })
+    })
+}
+
+exports.event_get_all_location = (req, res, next) => {
+    Event.find({location: req.body.location})
+    .select('metadata initialDate finalDate streamType')
+    .exec()
+    .then(event =>{
+        res.status(200).json({
+            events: event
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'Algo anduvo mal!',
             error: err
         })
     })

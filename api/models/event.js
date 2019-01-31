@@ -16,7 +16,8 @@ const eventSchema = mongoose.Schema({
         presenter: {type: String},
         contributor: {type: String}
     },
-    streamType: {type:String}
+    streamType: {type:String, required: true},
+    location:{type: String, required: true}
 })
 
 module.exports = mongoose.model('Event', eventSchema)
