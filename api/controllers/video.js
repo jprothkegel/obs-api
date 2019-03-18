@@ -43,23 +43,44 @@ exports.video_create = (req, res, next) => {
                 }
                 today = yyyy+'-'+mm+'-'+dd+' '+hours+'-'+minutes+'-'+seconds
 
+                creator = req.body.metadata.creator
+                console.log(creator)
                 const video = new Video({
                     _id: mongoose.Types.ObjectId(),
                     userId: streamKey.userId,
                     streamKeyId: req.body.streamKeyData,
                     metadata: {
-                        title: req.body.metadata.title,
-                        description: req.body.metadata.description,
-                        subject: req.body.metadata.subject,
-                        language: req.body.metadata.language,
-                        rights: req.body.metadata.rights,
-                        license: req.body.metadata.license,
-                        seriesid: req.body.metadata.seriesid,
-                        presenter: req.body.metadata.presenter,
-                        contributor: req.body.metadata.contributor
+                        flavor: "dublincore/episode",
+                        fields: [
+                            {
+                                id: "title",
+                                value: req.body.metadata.title
+                            },
+                            {
+                                id: "description",
+                                value: req.body.metadata.description
+                            },
+                            {
+                                id: "language",
+                                value: req.body.metadata.language
+                            },
+                            {
+                                id: "license",
+                                value: req.body.metadata.license
+                            },
+                            {
+                                id: "creator",
+                                value: req.body.metadata.creator
+                            },
+                            {
+                                id: "contributor",
+                                value: req.body.metadata.contributor
+                            }
+                        ]
                     },
                     date: today,
-                    status: req.body.status
+                    status: req.body.status,
+                    streamType: req.body.streamType
                 })
                 return video.save();
             }).then(result => {
@@ -84,7 +105,7 @@ exports.video_create = (req, res, next) => {
 
 exports.video_get_all = (req, res, next) => {
     Video.find({status:'Active'})
-    .select('streamKeyId _id metadata.title date')
+    .select('streamKeyId _id metadata.fields date')
     .exec()
     .then(video => {
         res.status(200).json({
@@ -143,6 +164,22 @@ exports.video_change_status = (req, res, next) => {
     .then(resp => {
         res.status(200).json({
             message: 'Estado vídeo actualizado'
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            error:err
+        })
+    })
+}
+
+exports.get_inactive_videos = (req, res, next)=> {
+    Video.find({status:'Inactive'}).limit(1).sort({$natural: -1})
+    .select('metadata')
+    .exec()
+    .then(resp => {
+        res.status(200).json({
+            message: resp
         })
     })
     .catch(err => {
