@@ -6,15 +6,34 @@ const eventSchema = mongoose.Schema({
     initialDate: {type:String, required:true},
     finalDate: {type:String, required:true},
     metadata: {
-        title: {type:String,required:true},
-        description: {type:String},
-        subject: {type:String},
-        language: {type:String},
-        rights: {type:String},
-        license: {type:String},
-        seriesid: {type:String},
-        presenter: {type: String},
-        contributor: {type: String}
+        flavor: { type:String },
+        fields: [
+            {
+                id: {type:String},
+                value: {type:String, required:true}
+            },
+            {
+                id: {type:String},
+                value:{type: String}
+            },
+            {
+                id: {type:String},
+                value:{type: String}
+            },
+            {
+                id: {type:String},
+                value:{type: String}
+            },
+            {
+                id: {type:String},
+                value:{type: Array}
+            },
+            {
+                id: {type:String},
+                value:{type: Array}
+            },
+
+        ]
     },
     streamType: {type:String, required: true},
     location:{type: String, required: true}

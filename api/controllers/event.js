@@ -8,15 +8,33 @@ exports.event_create = (req, res, next) => {
         initialDate: req.body.initialDate,
         finalDate: req.body.finalDate,
         metadata: {
-            title: req.body.metadata.title,
-            description: req.body.metadata.description,
-            subject: req.body.metadata.subject,
-            language: req.body.metadata.language,
-            rights: req.body.metadata.rights,
-            license: req.body.metadata.license,
-            seriesid: req.body.metadata.seriesid,
-            presenter: req.body.metadata.presenter,
-            contributor: req.body.metadata.contributor
+            flavor: "dublincore/episode",
+            fields: [
+                {
+                    id:"title",
+                    value: req.body.metadata.title
+                },
+                {
+                    id: "description",
+                    value: req.body.metadata.description
+                },
+                {
+                    id: "language",
+                    value: req.body.metadata.language
+                },
+                {
+                    id: "license",
+                    value: req.body.metadata.license
+                },
+                {
+                    id: "creator",
+                    value: req.body.metadata.creator
+                },
+                {
+                    id: "contributor",
+                    value: req.body.metadata.contributor
+                }
+            ]
         },
         streamType: req.body.streamType,
         location: req.body.location
@@ -31,7 +49,7 @@ exports.event_create = (req, res, next) => {
 
 exports.event_get_all_user = (req, res, next) => {
     Event.find({userId: req.body.userId})
-    .select('initialDate finalDate metadata.title')
+    .select('initialDate finalDate metadata.fields')
     .exec()
     .then(event => {
         res.status(200).json({
@@ -74,6 +92,23 @@ exports.event_get_all_location = (req, res, next) => {
     .catch(err => {
         res.status(500).json({
             message: 'Algo anduvo mal!',
+            error: err
+        })
+    })
+}
+
+exports.event_get_by_id = (req, res, next) => {
+    Event.findById(req.params.eventId)
+    .select('metadata initialDate finalDate streamType')
+    .exec()
+    .then(event => {
+        res.status(200).json({
+            event: event
+        })
+    })
+    .catch(err => {
+        res.status(500).json({
+            message: 'Algo andudo mal!',
             error: err
         })
     })

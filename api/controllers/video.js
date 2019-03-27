@@ -144,7 +144,7 @@ exports.video_get = (req, res, next) => {
 }
 
 exports.video_delete = (req, res , next) => {
-    Video.remove({streamKeyId: req.body.streamKeyId})
+    Video.deleteOne({id: req.body.streamKeyId})
     .exec()
     .then(video => {
         res.status(200).json({
