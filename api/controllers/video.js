@@ -122,13 +122,14 @@ exports.video_get_all = (req, res, next) => {
 
 exports.video_get = (req, res, next) => {
     Video.findById(req.params.videoId)
-    .select('streamKeyId')
+    .select('streamKeyId metadata')
     .then(video => {
         StreamKey.findById(video.streamKeyId)
         .select('key')
         .then(result => {
             res.status(200).json({
-                streamKey: result
+                streamKey: result,
+                video: video
             })
         })
         .catch(err => {
