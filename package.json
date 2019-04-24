@@ -10,12 +10,15 @@
   "author": "Juan Pablo Rothkegel Ide",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "axios-debug-log": "^0.4.0",
     "bcrypt": "^3.0.3",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
     "jsonwebtoken": "^8.4.0",
     "mongoose": "^5.4.2",
     "obs-websocket-js": "^2.0.1",
+    "request": "^2.88.0",
     "uuid": "^3.3.2"
   },
   "devDependencies": {

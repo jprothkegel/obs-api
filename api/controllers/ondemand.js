@@ -1,0 +1,63 @@
+const axios = require('axios')
+
+
+exports.get_ondemand_videos = (req, res, next) => {
+  axios({
+      url: 'http://192.168.1.230:8080/api/events/',
+      method: 'get',
+      headers: {
+        'Authorization': 'Basic YWRtaW46b3BlbmNhc3Q='
+      }
+    })
+    .then(resp => {
+      const videos = []
+      resp.data.forEach(function(arrayItem) {
+        videos.push({
+          id: arrayItem.identifier,
+          title: arrayItem.title,
+          contributor: arrayItem.contributor
+        })
+
+      })
+      res.status(200).json({
+        message: "Funciono",
+        videos: videos
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: "No funciono"
+      })
+    })
+}
+
+exports.get_ondemand_link = (req, res, next) => {
+  var eventId = req.body.eventId
+  axios({
+      url: 'http://192.168.1.230:8080/api/events/' + eventId + '/publications',
+      method: 'get',
+      headers: {
+        'Authorization': 'Basic YWRtaW46b3BlbmNhc3Q='
+      }
+    })
+    .then(resp => {
+      for(let i in resp.data[1].attachments){
+        if(resp.data[1].attachments[i].flavor === 'presenter/search+preview'){
+          previewUrl = resp.data[1].attachments[i].url
+        }
+      }
+      videoUrl = resp.data[1].media[0].url
+      res.status(200).json({
+        message: {
+          videoUrl: videoUrl,
+          previewUrl: previewUrl,
+          id: req.body.eventId
+        }
+      })
+    })
+    .catch(err => {
+      res.status(500).json({
+        message: "No funciono"
+      })
+    })
+}
