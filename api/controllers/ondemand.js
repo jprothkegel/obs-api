@@ -1,9 +1,10 @@
 const axios = require('axios')
 
+var baseUrl = 'http://192.168.1.230:8080'
 
 exports.get_ondemand_videos = (req, res, next) => {
   axios({
-      url: 'http://192.168.1.230:8080/api/events/',
+      url: baseUrl + '/api/events/',
       method: 'get',
       headers: {
         'Authorization': 'Basic YWRtaW46b3BlbmNhc3Q='
@@ -34,7 +35,7 @@ exports.get_ondemand_videos = (req, res, next) => {
 exports.get_ondemand_link = (req, res, next) => {
   var eventId = req.body.eventId
   axios({
-      url: 'http://192.168.1.230:8080/api/events/' + eventId + '/publications',
+      url: baseUrl + '/api/events/' + eventId + '/publications',
       method: 'get',
       headers: {
         'Authorization': 'Basic YWRtaW46b3BlbmNhc3Q='
