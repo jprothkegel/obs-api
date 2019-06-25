@@ -1,13 +1,16 @@
 const axios = require('axios')
 
 var baseUrl = 'http://192.168.1.230:8080'
+var user = 'admin'
+var password = 'opencast'
+var base64encodedData = new Buffer(user + ':' + password).toString('base64')
 
 exports.get_ondemand_videos = (req, res, next) => {
   axios({
       url: baseUrl + '/api/events/',
       method: 'get',
       headers: {
-        'Authorization': 'Basic YWRtaW46b3BlbmNhc3Q='
+        'Authorization': 'Basic ' + base64encodedData
       }
     })
     .then(resp => {
