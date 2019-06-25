@@ -16,12 +16,13 @@ exports.get_ondemand_videos = (req, res, next) => {
     .then(resp => {
       const videos = []
       resp.data.forEach(function(arrayItem) {
-        videos.push({
-          id: arrayItem.identifier,
-          title: arrayItem.title,
-          contributor: arrayItem.contributor
-        })
-
+        if(arrayItem.status === 'EVENTS.EVENTS.STATUS.PROCESSED'){
+          videos.push({
+            id: arrayItem.identifier,
+            title: arrayItem.title,
+            contributor: arrayItem.contributor
+          })
+        }
       })
       res.status(200).json({
         message: "Funciono",
