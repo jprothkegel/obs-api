@@ -6,6 +6,7 @@ var password = 'opencast'
 var base64encodedData = new Buffer(user + ':' + password).toString('base64')
 
 exports.get_ondemand_videos = (req, res, next) => {
+  console.log(base64encodedData)
   axios({
       url: baseUrl + '/api/events/',
       method: 'get',
