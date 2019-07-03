@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-var baseUrl = 'http://192.168.0.67:8080'
+var baseUrl = 'http://192.168.1.124:8080'
 var user = 'admin'
 var password = 'opencast'
 var base64encodedData = new Buffer(user + ':' + password).toString('base64')
@@ -46,17 +46,25 @@ exports.get_ondemand_link = (req, res, next) => {
       }
     })
     .then(resp => {
+      let videoUrlArray = []
       for(let i in resp.data[1].attachments){
-        if(resp.data[1].attachments[i].flavor === 'presenter/search+preview'){
+        if(resp.data[1].attachments[i].flavor === 'presenter/search+preview' || resp.data[1].attachments[i].flavor === 'presentation/search+preview'){
           previewUrl = resp.data[1].attachments[i].url
         }
+      }
+      for(let j in resp.data[1].media){
+        videoUrlArray.push({
+          "flavor": resp.data[1].media[j].flavor,
+          "url": resp.data[1].media[j].url
+        })
       }
       videoUrl = resp.data[1].media[0].url
       res.status(200).json({
         message: {
           videoUrl: videoUrl,
           previewUrl: previewUrl,
-          id: req.body.eventId
+          id: req.body.eventId,
+          videoUrlArray: videoUrlArray
         }
       })
     })
