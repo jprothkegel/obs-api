@@ -47,6 +47,7 @@ exports.get_ondemand_link = (req, res, next) => {
     })
     .then(resp => {
       let videoUrlArray = []
+      let duration = ''
       for(let i in resp.data[1].attachments){
         if(resp.data[1].attachments[i].flavor === 'presenter/search+preview' || resp.data[1].attachments[i].flavor === 'presentation/search+preview'){
           previewUrl = resp.data[1].attachments[i].url
@@ -57,6 +58,8 @@ exports.get_ondemand_link = (req, res, next) => {
           "flavor": resp.data[1].media[j].flavor,
           "url": resp.data[1].media[j].url
         })
+        duration = resp.data[1].media[j].duration
+        console.log(resp.data[1].media[j].duration)
       }
       videoUrl = resp.data[1].media[0].url
       res.status(200).json({
@@ -64,7 +67,8 @@ exports.get_ondemand_link = (req, res, next) => {
           videoUrl: videoUrl,
           previewUrl: previewUrl,
           id: req.body.eventId,
-          videoUrlArray: videoUrlArray
+          videoUrlArray: videoUrlArray,
+          duration: duration
         }
       })
     })
