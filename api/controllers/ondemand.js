@@ -1,6 +1,6 @@
 const axios = require('axios')
 
-var baseUrl = 'http://192.168.1.124:8080'
+var baseUrl = 'http://192.168.0.67:8080'
 var user = 'admin'
 var password = 'opencast'
 var base64encodedData = new Buffer(user + ':' + password).toString('base64')

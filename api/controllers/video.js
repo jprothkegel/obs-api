@@ -71,10 +71,6 @@ exports.video_create = (req, res, next) => {
                             {
                                 id: "creator",
                                 value: req.body.metadata.creator
-                            },
-                            {
-                                id: "contributor",
-                                value: req.body.metadata.contributor
                             }
                         ]
                     },
