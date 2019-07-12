@@ -20,7 +20,7 @@ exports.get_ondemand_videos = (req, res, next) => {
           videos.push({
             id: arrayItem.identifier,
             title: arrayItem.title,
-            contributor: arrayItem.contributor
+            creator: arrayItem.presenter
           })
         }
       })
@@ -59,7 +59,6 @@ exports.get_ondemand_link = (req, res, next) => {
           "url": resp.data[1].media[j].url
         })
         duration = resp.data[1].media[j].duration
-        console.log(resp.data[1].media[j].duration)
       }
       videoUrl = resp.data[1].media[0].url
       res.status(200).json({
