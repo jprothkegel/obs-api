@@ -1,8 +1,8 @@
 const axios = require('axios')
 
-var baseUrl = 'http://192.168.0.67:8080'
+var baseUrl = 'http://opencast.elo.utfsm.cl:8080'
 var user = 'admin'
-var password = 'opencast'
+var password = 'UTFSM19cast'
 var base64encodedData = new Buffer(user + ':' + password).toString('base64')
 
 exports.get_ondemand_videos = (req, res, next) => {
